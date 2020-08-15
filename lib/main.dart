@@ -5,11 +5,15 @@ import 'package:barcode_scan/barcode_scan.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:flutter_share/flutter_share.dart';
 
-void main() => runApp(MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: HomePage(),
-    ));
+String code = "QR/Barcode Scaning Result";
+void main() => runApp(
+      MaterialApp(
+        debugShowCheckedModeBanner: false,
+        home: HomePage(),
+      ),
+    );
 
 class HomePage extends StatefulWidget {
   @override
@@ -19,8 +23,6 @@ class HomePage extends StatefulWidget {
 }
 
 class HomePageState extends State<HomePage> {
-  String code = "Hey there !";
-
   Future _scanQR() async {
     try {
       var result = await BarcodeScanner.scan();
@@ -61,6 +63,23 @@ class HomePageState extends State<HomePage> {
     }
   }
 
+  Future _openResult() async {
+    final url = code;
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
+
+  Future<void> share() async {
+    await FlutterShare.share(
+        title: 'QR/Barcode Result',
+        text: 'Share scan result',
+        linkUrl: code,
+        chooserTitle: 'Example Chooser Title');
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -69,15 +88,50 @@ class HomePageState extends State<HomePage> {
       ),
       body: Padding(
         padding: EdgeInsets.all(15),
-        child: Center(
-          child: Expanded(
-            child: Linkify(
-              onOpen: _onOpen,
-              text: code,
-              options: LinkifyOptions(humanize: false),
-              linkStyle: TextStyle(fontSize: 20, color: Colors.red),
+        child: Column(
+          children: <Widget>[
+            Center(
+              child: Expanded(
+                child: SelectableLinkify(
+                  onOpen: _onOpen,
+                  text: code,
+                  options: LinkifyOptions(humanize: false),
+                  linkStyle: TextStyle(fontSize: 20, color: Colors.red),
+                ),
+              ),
             ),
-          ),
+            Padding(
+              padding: const EdgeInsets.only(top: 30),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  MaterialButton(
+                      onPressed: _openResult,
+                      child: Column(
+                        children: <Widget>[
+                          Icon(
+                            Icons.open_in_browser,
+                            size: 40,
+                          ),
+                          Text("Open")
+                        ],
+                      )),
+                  MaterialButton(
+                    onPressed: share,
+                    child: Column(
+                      children: <Widget>[
+                        Icon(
+                          Icons.share,
+                          size: 40,
+                        ),
+                        Text("Share")
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            )
+          ],
         ),
       ),
       floatingActionButton: FloatingActionButton.extended(
