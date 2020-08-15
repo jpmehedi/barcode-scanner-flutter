@@ -128,6 +128,27 @@ class HomePageState extends State<HomePage> {
                       ],
                     ),
                   ),
+                  FlatButton(
+                    onPressed: () {
+                      Clipboard.setData(
+                        ClipboardData(text: code),
+                      );
+                    },
+                    child: Column(
+                      children: <Widget>[
+                        Icon(
+                          Icons.content_copy,
+                          size: 40,
+                        ),
+                        Tooltip(
+                          verticalOffset: 60,
+                          preferBelow: false,
+                          message: "Copy",
+                          child: Text("Copy"),
+                        ),
+                      ],
+                    ),
+                  )
                 ],
               ),
             )
