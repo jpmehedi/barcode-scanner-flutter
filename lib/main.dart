@@ -7,7 +7,7 @@ import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_share/flutter_share.dart';
 
-String code = "QR/Barcode Scaning Result";
+String code = " ";
 void main() => runApp(
       MaterialApp(
         debugShowCheckedModeBanner: false,
@@ -86,74 +86,82 @@ class HomePageState extends State<HomePage> {
       appBar: AppBar(
         title: Text("QR Scanner"),
       ),
-      body: Padding(
-        padding: EdgeInsets.all(15),
-        child: Column(
-          children: <Widget>[
-            Center(
+      body: Column(
+        children: <Widget>[
+          Container(
+            height: 200,
+            color: Colors.blueGrey.shade50,
+            child: Center(
               child: Expanded(
-                child: SelectableLinkify(
-                  onOpen: _onOpen,
-                  text: code,
-                  options: LinkifyOptions(humanize: false),
-                  linkStyle: TextStyle(fontSize: 20, color: Colors.red),
+                child: Padding(
+                  padding: const EdgeInsets.all(15.0),
+                  child: SelectableLinkify(
+                    onOpen: _onOpen,
+                    text: code,
+                    options: LinkifyOptions(humanize: false),
+                    linkStyle: TextStyle(fontSize: 20, color: Colors.red),
+                  ),
                 ),
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.only(top: 30),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  MaterialButton(
-                      onPressed: _openResult,
+          ),
+          Column(
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.only(top: 30),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    MaterialButton(
+                        onPressed: _openResult,
+                        child: Column(
+                          children: <Widget>[
+                            Icon(
+                              Icons.open_in_browser,
+                              size: 40,
+                            ),
+                            Text("Open")
+                          ],
+                        )),
+                    MaterialButton(
+                      onPressed: share,
                       child: Column(
                         children: <Widget>[
                           Icon(
-                            Icons.open_in_browser,
+                            Icons.share,
                             size: 40,
                           ),
-                          Text("Open")
+                          Text("Share")
                         ],
-                      )),
-                  MaterialButton(
-                    onPressed: share,
-                    child: Column(
-                      children: <Widget>[
-                        Icon(
-                          Icons.share,
-                          size: 40,
-                        ),
-                        Text("Share")
-                      ],
+                      ),
                     ),
-                  ),
-                  FlatButton(
-                    onPressed: () {
-                      Clipboard.setData(
-                        ClipboardData(text: code),
-                      );
-                    },
-                    child: Column(
-                      children: <Widget>[
-                        Icon(
-                          Icons.content_copy,
-                          size: 40,
-                        ),
-                        Tooltip(
-                          verticalOffset: 60,
-                          preferBelow: false,
-                          message: "Copy",
-                          child: Text("Copy"),
-                        ),
-                      ],
-                    ),
-                  )
-                ],
+                    FlatButton(
+                      onPressed: () {
+                        Clipboard.setData(
+                          ClipboardData(text: code),
+                        );
+                      },
+                      child: Column(
+                        children: <Widget>[
+                          Icon(
+                            Icons.content_copy,
+                            size: 40,
+                          ),
+                          Tooltip(
+                            verticalOffset: 60,
+                            preferBelow: false,
+                            message: "Copy",
+                            child: Text("Copy"),
+                          ),
+                        ],
+                      ),
+                    )
+                  ],
+                ),
               ),
-            )
-          ],
-        ),
+            ],
+          )
+        ],
       ),
       floatingActionButton: FloatingActionButton.extended(
         icon: Icon(Icons.camera_alt),
