@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:barcode_scan/barcode_scan.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_linkify/flutter_linkify.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 void main() => runApp(MaterialApp(
       debugShowCheckedModeBanner: false,
@@ -51,16 +53,31 @@ class HomePageState extends State<HomePage> {
     }
   }
 
+  Future<void> _onOpen(LinkableElement link) async {
+    if (await canLaunch(link.url)) {
+      await launch(link.url);
+    } else {
+      throw 'Could not launch $link';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text("QR Scanner"),
       ),
-      body: Center(
-        child: Text(
-          code,
-          style: new TextStyle(fontSize: 30.0, fontWeight: FontWeight.bold),
+      body: Padding(
+        padding: EdgeInsets.all(15),
+        child: Center(
+          child: Expanded(
+            child: Linkify(
+              onOpen: _onOpen,
+              text: code,
+              options: LinkifyOptions(humanize: false),
+              linkStyle: TextStyle(fontSize: 20, color: Colors.red),
+            ),
+          ),
         ),
       ),
       floatingActionButton: FloatingActionButton.extended(
